@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Cache-busting meta tags to prevent blank screen looping -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>The Board | Directives</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
@@ -29,7 +33,7 @@
         body {
             background-color: #050505;
             color: #f0f0f0;
-            overflow: hidden;
+            overflow-x: hidden;
             margin: 0;
             padding: 0;
             user-select: none;
@@ -41,10 +45,7 @@
             content: " ";
             display: block;
             position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
                         linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 50;
@@ -54,10 +55,7 @@
 
         .vignette {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(5,5,5,0.9) 100%);
             z-index: 10;
             pointer-events: none;
@@ -65,8 +63,7 @@
 
         .pyramid-container {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
             opacity: 0.15;
@@ -74,13 +71,9 @@
         }
 
         .pyramid {
-            width: 40vw;
-            height: 40vw;
-            max-width: 400px;
-            max-height: 400px;
-            fill: #000;
-            stroke: #fff;
-            stroke-width: 2;
+            width: 40vw; height: 40vw;
+            max-width: 400px; max-height: 400px;
+            fill: #000; stroke: #fff; stroke-width: 2;
             filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
             transition: all 0.5s ease;
         }
@@ -90,8 +83,7 @@
         }
 
         .pyramid.hiss-active {
-            stroke: #ff003c;
-            filter: drop-shadow(0 0 30px #ff003c);
+            stroke: #ff003c; filter: drop-shadow(0 0 30px #ff003c);
         }
 
         @keyframes float {
@@ -115,7 +107,309 @@
             animation: glitch-anim2 5s infinite linear alternate-reverse;
         }
 
-        @keyframes glitch-anim {
-            0% { clip: rect(10px, 9999px, 86px, 0); }
-            5% { clip: rect(61px, 9999px, 12px, 0); }
-            10% { clip: rect(10px, 9999px
+        @keyframes glitch-anim { 0% { clip: rect(10px, 9999px, 86px, 0); } 5% { clip: rect(61px, 9999px, 12px, 0); } 10% { clip: rect(10px, 9999px, 56px, 0); } 15% { clip: rect(80px, 9999px, 10px, 0); } 20% { clip: rect(30px, 9999px, 90px, 0); } 25% { clip: rect(20px, 9999px, 40px, 0); } 100% { clip: rect(20px, 9999px, 40px, 0); } }
+        @keyframes glitch-anim2 { 0% { clip: rect(40px, 9999px, 20px, 0); } 5% { clip: rect(80px, 9999px, 90px, 0); } 10% { clip: rect(30px, 9999px, 10px, 0); } 15% { clip: rect(10px, 9999px, 56px, 0); } 20% { clip: rect(61px, 9999px, 12px, 0); } 25% { clip: rect(10px, 9999px, 86px, 0); } 100% { clip: rect(10px, 9999px, 86px, 0); } }
+
+        .btn-brutal {
+            position: relative; background: transparent; color: #fff;
+            border: 3px solid #fff; font-weight: 900; letter-spacing: 0.1em;
+            text-transform: uppercase; overflow: hidden; transition: all 0.3s ease; z-index: 20;
+        }
+        .btn-brutal::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: #fff; transition: all 0.3s ease; z-index: -1;
+        }
+        .btn-brutal:hover { color: #050505; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        .btn-brutal:hover::before { left: 0; }
+
+        .btn-action {
+            background: transparent; color: #aaa; border: 1px solid #aaa;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 0.5rem 1rem; transition: all 0.3s ease; cursor: pointer;
+        }
+        .btn-action:hover, .btn-action:active {
+            color: #fff; border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .slash { color: #ff003c; font-weight: 900; }
+        #user-input { user-select: auto; -webkit-user-select: auto; }
+    </style>
+</head>
+
+<!-- min-h-screen ensures it never collapses to 0 height -->
+<body class="crt min-h-screen w-full flex flex-col items-center justify-center relative">
+    
+    <div class="vignette"></div>
+
+    <div class="pyramid-container">
+        <svg class="pyramid" id="pyramid-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <polygon points="0,0 100,0 50,100" />
+        </svg>
+    </div>
+
+    <main class="z-20 flex flex-col items-center justify-center w-full px-4 sm:px-6 max-w-5xl h-full space-y-8 md:space-y-12 py-10">
+        
+        <div class="text-[0.65rem] md:text-sm tracking-[0.3em] text-gray-500 uppercase font-bold text-center">
+            Federal Bureau of Control <br>
+            <span class="text-hiss-red">Astral Plane Translator</span>
+        </div>
+
+        <div class="min-h-[120px] md:min-h-[200px] flex flex-col items-center justify-center w-full text-center">
+            <h1 class="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-wider leading-tight glitch-wrapper drop-shadow-lg px-2">
+                <span class="glitch" id="directive-text" data-text="< AWAITING INPUT / THOUGHT >">
+                    &lt; AWAITING INPUT <span class="slash">/</span> THOUGHT &gt;
+                </span>
+            </h1>
+            
+            <div id="action-toolbar" class="flex flex-wrap justify-center gap-3 mt-6 opacity-0 pointer-events-none transition-opacity duration-300 min-h-10">
+                <button id="copy-btn" class="btn-action">COPY TEXT</button>
+                <button id="share-img-btn" class="btn-action">SAVE IMAGE</button>
+            </div>
+        </div>
+
+        <div class="w-full max-w-2xl flex flex-col sm:flex-row gap-3 relative z-30 pb-4">
+            <input type="text" id="user-input" autocomplete="off"
+                class="flex-grow bg-[#111] border-2 border-gray-600 p-4 text-white text-base md:text-lg focus:outline-none focus:border-white font-bold tracking-wider placeholder-gray-600 transition-colors shadow-2xl rounded-none appearance-none" 
+                placeholder="ENTER QUERY / THOUGHT...">
+            <button id="transmit-btn" class="btn-brutal px-6 py-4 text-base md:text-lg cursor-pointer flex items-center justify-center whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                TRANSMIT <span class="mx-2 text-hiss-red font-black">/</span> SEND
+            </button>
+        </div>
+    </main>
+
+    <div id="export-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex-col items-center justify-center p-4 backdrop-blur-md opacity-0 transition-opacity duration-300">
+        <div class="text-white text-center mb-4 md:mb-6 tracking-[0.1em] md:tracking-[0.2em] font-bold text-xs md:text-sm drop-shadow-md">
+            LONG-PRESS OR RIGHT-CLICK IMAGE TO SAVE
+        </div>
+        <img id="export-image" class="w-full max-w-[90vw] md:max-w-[400px] aspect-square object-contain border-2 md:border-4 border-white shadow-[0_0_40px_rgba(255,255,255,0.15)] pointer-events-auto" src="" alt="Transmitted Directive">
+        <button id="close-modal-btn" class="btn-brutal px-8 py-3 mt-8 text-sm md:text-base cursor-pointer">
+            CLOSE <span class="mx-2 text-hiss-red font-black">/</span> DISMISS
+        </button>
+    </div>
+
+    <script>
+        const userInput = document.getElementById('user-input');
+        const transmitBtn = document.getElementById('transmit-btn');
+        const directiveText = document.getElementById('directive-text');
+        const pyramidSvg = document.getElementById('pyramid-svg');
+        const actionToolbar = document.getElementById('action-toolbar');
+        const copyBtn = document.getElementById('copy-btn');
+        const shareImgBtn = document.getElementById('share-img-btn');
+        const exportModal = document.getElementById('export-modal');
+        const exportImage = document.getElementById('export-image');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+
+        let isTransmitting = false;
+        let currentRawText = "";
+        let formattedHtmlText = "";
+
+        async function translateToBoard(text) {
+            const systemPrompt = "You are 'The Board' from the video game Control. You communicate telepathically with the Director in short, authoritative, eerie, and bureaucratic sentences. Your signature trait is the heavy use of forward slashes to separate synonyms, related concepts, hidden meanings, or contradictions (e.g., 'Welcome/Intruder', 'The House/World shifts', 'You/Director must cleanse/destroy'). Capitalize important nouns. Translate the user's input into your specific, unsettling speech pattern. Keep the response concise, typically one or two sentences. Do NOT wrap your response in < or > tags, just output the raw text.";
+            
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            try {
+                const response = await fetch('/.netlify/functions/board', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    return result.candidates[0].content.parts[0].text.trim();
+                } else {
+                    throw new Error("Invalid API response format");
+                }
+            } catch (error) {
+                console.error("Astral Plane Connection Failed:", error);
+                return "CONNECTION LOST / STATIC / INTERFERENCE";
+            }
+        }
+
+        function formatBoardOutput(plainText) {
+            let cleaned = plainText.replace(/^</, '').replace(/>$/, '').trim();
+            let uiHtml = cleaned.replace(/\//g, '<span class="slash">/</span>');
+            let exportHtml = cleaned.replace(/\//g, '<span style="color: #ff003c;">/</span>');
+            
+            return {
+                ui: `&lt; ${uiHtml} &gt;`,
+                export: `&lt; ${exportHtml} &gt;`,
+                raw: `< ${cleaned} >`
+            };
+        }
+
+        async function handleTransmission() {
+            const text = userInput.value.trim();
+            if (!text || isTransmitting) return;
+
+            isTransmitting = true;
+            transmitBtn.disabled = true;
+            userInput.disabled = true;
+            
+            transmitBtn.innerHTML = '<span class="animate-pulse">TRANSMITTING...</span>';
+            actionToolbar.classList.add('opacity-0', 'pointer-events-none');
+            pyramidSvg.classList.add('hiss-active');
+            directiveText.classList.add('active-glitch');
+            
+            userInput.blur();
+            
+            const connectingText = "TRANSMITTING / CONNECTING";
+            directiveText.innerHTML = `&lt; ${connectingText.replace(/\//g, "<span class='slash'>/</span>")} &gt;`;
+            directiveText.setAttribute('data-text', `< ${connectingText} >`);
+
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            const translatedText = await translateToBoard(text);
+            const formats = formatBoardOutput(translatedText);
+            
+            currentRawText = formats.raw;
+            formattedHtmlText = formats.export;
+
+            let rawTextForData = currentRawText.replace(/<span[^>]*>/g, '').replace(/<\/span>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>'); 
+
+            directiveText.innerHTML = formats.ui;
+            directiveText.setAttribute('data-text', rawTextForData);
+            
+            directiveText.classList.remove('active-glitch');
+            pyramidSvg.classList.remove('hiss-active');
+            actionToolbar.classList.remove('opacity-0', 'pointer-events-none');
+            
+            isTransmitting = false;
+            transmitBtn.disabled = false;
+            userInput.disabled = false;
+            userInput.value = '';
+            
+            transmitBtn.innerHTML = 'TRANSMIT <span class="mx-2 text-hiss-red font-black">/</span> SEND';
+        }
+
+        transmitBtn.addEventListener('click', handleTransmission);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleTransmission();
+        });
+
+        copyBtn.addEventListener('click', () => {
+            if (!currentRawText) return;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(currentRawText).then(() => showCopySuccess());
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = currentRawText;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try { document.execCommand('copy'); showCopySuccess(); } catch (err) {}
+                textArea.remove();
+            }
+        });
+
+        function showCopySuccess() {
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = "COPIED / CAPTURED";
+            copyBtn.style.color = "#ff003c";
+            copyBtn.style.borderColor = "#ff003c";
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+                copyBtn.style.color = "";
+                copyBtn.style.borderColor = "";
+            }, 2000);
+        }
+
+        shareImgBtn.addEventListener('click', async () => {
+            if (!currentRawText) return;
+            
+            const originalText = shareImgBtn.innerText;
+            shareImgBtn.innerText = "PROCESSING...";
+            shareImgBtn.disabled = true;
+
+            const customAlert = (msg) => {
+                const toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.left = '50%';
+                toast.style.transform = 'translateX(-50%)';
+                toast.style.background = '#ff003c';
+                toast.style.color = '#fff';
+                toast.style.padding = '1rem 2rem';
+                toast.style.fontWeight = 'bold';
+                toast.style.zIndex = '99999';
+                toast.style.border = '2px solid #fff';
+                toast.innerText = msg;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 4000);
+            };
+
+            let exportNode = null;
+
+            try {
+                exportNode = document.createElement('div');
+                exportNode.style.cssText = 'position: absolute; top: 0; left: -9999px; width: 1080px; height: 1080px; background-color: #050505; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: -9999;';
+                
+                exportNode.innerHTML = `
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%); background-size: 100% 4px; pointer-events: none; z-index: 5;"></div>
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; width: 600px; height: 600px; fill: #000; stroke: #fff; stroke-width: 2; opacity: 0.15; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        <polygon points="0,0 100,0 50,100" />
+                    </svg>
+                    <div style="position: relative; z-index: 10; width: 80%; text-align: center;">
+                        <h1 style="color: #f0f0f0; font-family: 'Inter', sans-serif; font-size: 72px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2;">
+                            ${formattedHtmlText}
+                        </h1>
+                    </div>
+                    <div style="position: absolute; bottom: 40px; color: #555; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; z-index: 10;">
+                        FBC <span style="color: #ff003c;">/</span> ASTRAL TRANSLATION
+                    </div>
+                `;
+
+                document.body.appendChild(exportNode);
+                await new Promise(resolve => setTimeout(resolve, 150)); 
+
+                const canvas = await html2canvas(exportNode, {
+                    width: 1080,
+                    height: 1080,
+                    scale: 2,
+                    backgroundColor: '#050505',
+                    useCORS: true,
+                    allowTaint: true
+                });
+
+                exportImage.src = canvas.toDataURL('image/png');
+                exportModal.classList.remove('hidden');
+                exportModal.classList.add('flex');
+                
+                void exportModal.offsetWidth;
+                exportModal.classList.remove('opacity-0');
+
+                document.body.removeChild(exportNode);
+                resetShareBtn();
+
+            } catch (error) {
+                console.error("Image generation failed:", error);
+                shareImgBtn.innerText = "ERROR / FAILURE";
+                shareImgBtn.style.color = "#ff003c";
+                customAlert('Export Error occurred');
+                if (exportNode && document.body.contains(exportNode)) document.body.removeChild(exportNode);
+                setTimeout(resetShareBtn, 2000);
+            }
+
+            function resetShareBtn() {
+                shareImgBtn.innerText = "SAVE IMAGE";
+                shareImgBtn.disabled = false;
+                shareImgBtn.style.color = "";
+            }
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            exportModal.classList.add('opacity-0');
+            setTimeout(() => {
+                exportModal.classList.add('hidden');
+                exportModal.classList.remove('flex');
+                exportImage.src = "";
+            }, 300);
+        });
+    </script>
+</body>
+</html>
